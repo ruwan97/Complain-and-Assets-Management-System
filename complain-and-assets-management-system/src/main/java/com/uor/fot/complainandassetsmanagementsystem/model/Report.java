@@ -17,10 +17,14 @@ public class Report {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "report_type")
+    private String reportType;
 
-    @Column(name = "date_time")
-    private Date date;
+    @Column(name = "report_date")
+    private Date reportDate;
+
+    @Column(name = "report_content")
+    private String reportContent;
 }
+
 

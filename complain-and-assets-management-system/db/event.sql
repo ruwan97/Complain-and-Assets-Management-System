@@ -1,45 +1,52 @@
 SET GLOBAL event_scheduler = ON;
 
+-- reports
+DROP EVENT IF EXISTS event_generate_daily_report;
 DELIMITER //
-CREATE EVENT EscalateComplaintsToSubWarden
-    ON SCHEDULE EVERY 1 DAY STARTS CURRENT_TIMESTAMP
+CREATE EVENT `event_generate_daily_report`
+    ON SCHEDULE EVERY 1 DAY
+    STARTS CONCAT(DATE(NOW()), ' 23:55:00')
+    ON COMPLETION PRESERVE
     DO
     BEGIN
-        -- Update complaints that are waiting for sub-warden action for 3 days
-        UPDATE complaint
-        SET status = 'ESCALATED_TO_SUB_WARDEN'
-        WHERE status = 'NEW' AND DATEDIFF(NOW(), submission_date) >= 3;
+        CALL sp_generate_daily_reports();
     END;
 //
 DELIMITER ;
 
+DROP EVENT IF EXISTS event_generate_monthly_report;
 DELIMITER //
-CREATE EVENT EscalateComplaintsToAcademicWarden
-    ON SCHEDULE EVERY 1 DAY STARTS CURRENT_TIMESTAMP
+CREATE EVENT `event_generate_monthly_report`
+    ON SCHEDULE EVERY 1 MONTH
+    STARTS CONCAT(DATE(NOW()), ' 23:55:00')
+    ON COMPLETION PRESERVE
     DO
     BEGIN
-        -- Update complaints that are waiting for academic warden action for 7 days
-        UPDATE complaint
-        SET status = 'ESCALATED_TO_ACADEMIC_WARDEN'
-        WHERE status = 'ESCALATED_TO_SUB_WARDEN' AND DATEDIFF(NOW(), submission_date) >= 7;
+        CALL sp_generate_monthly_reports();
     END;
 //
 DELIMITER ;
 
+-- escalate complaint
+DROP EVENT IF EXISTS event_sub_warden_escalation;
 DELIMITER //
-CREATE EVENT EscalateComplaints
-    ON SCHEDULE EVERY 1 DAY STARTS CURRENT_TIMESTAMP
+CREATE EVENT `event_sub_warden_escalation`
+    ON SCHEDULE EVERY 1 DAY
     DO
     BEGIN
-        -- Update complaints based on escalation rules
-        UPDATE complaint
-        SET status = CASE
-                         WHEN status = 'NEW' AND DATEDIFF(NOW(), submission_date) >= 3 THEN 'ESCALATED_TO_SUB_WARDEN'
-                         WHEN status = 'ESCALATED_TO_SUB_WARDEN' AND DATEDIFF(NOW(), submission_date) >= 7 THEN 'ESCALATED_TO_ACADEMIC_WARDEN'
-                         ELSE status
-            END
-        WHERE status IN ('NEW', 'ESCALATED_TO_SUB_WARDEN');
+        CALL sp_sub_warden_escalation();
     END;
 //
 DELIMITER ;
 
+
+DROP EVENT IF EXISTS event_academic_warden_escalation;
+DELIMITER //
+CREATE EVENT `event_academic_warden_escalation`
+    ON SCHEDULE EVERY 1 DAY
+    DO
+    BEGIN
+        CALL sp_academic_warden_escalation();
+    END;
+//
+DELIMITER ;
