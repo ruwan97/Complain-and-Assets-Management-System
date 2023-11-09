@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 20vh;
+            margin: 0;
+            background-color: #f2f2f2;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+        }
+
+        .header {
+            background-color: #45a049;
+            color: #fff;
+            text-align: center;
+            margin-top: 0px;
+            width: 100%;
+            cursor: pointer;
+
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .dashboard-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dashboard-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .dashboard-item h2 {
+            color: #45a049;
+        }
+
+        .dashboard-item a {
+            color: #45a049;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .signin-heading {
+            text-align: center;
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+
+        .login-container {
+            width: 300px;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .input-group button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-group button:hover {
+            background-color: #45a049;
+        }
+
+        .signin-heading {
+            text-align: center;
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            background-color: #45a049;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .error-message {
+            text-align: center;
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header" th:onclick="|location.href='dashboard.html'|">
+    <h1>Hostel Complaint Management System</h1>
+</div>
+<div class="dashboard-container">
+</div>
+<div class="login-container">
+    <h1 class="signin-heading">Sign-in</h1>
+    <!-- Display the error message here -->
+    <div th:if="${errorMessage}" id="errorMessage" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <form th:action="@{/auth/login}" method="post">
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" placeholder="Enter your Email Address">
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
+        </div>
+        <div class="input-group">
+            <button type="submit" style="width: 100%">Login</button>
+        </div>
+        <div class="input-group">
+            <a th:href="@{/registration}">
+                <button type="button" style="width: 100%">Sign up</button>
+            </a>
+        </div>
+    </form>
+    <!-- Display the registration success message here -->
+    <div th:if="${registrationSuccessMessage}" id="successMessage" style="text-align: center; color: green;">
+        <p th:text="${registrationSuccessMessage}"></p>
+    </div>
+</div>
+
+<script>
+    // Set a timeout function to hide the success message after a certain time
+    setTimeout(function () {
+        var successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
+    }, 5000); // Timeout of 5000 milliseconds (5 seconds)
+
+    // Set a timeout function to hide the error message after a certain time
+    setTimeout(function () {
+        var errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+    }, 5000); // Timeout of 5000 milliseconds (5 seconds)
+</script>
+
+</body>
+
+</html>

@@ -5,13 +5,15 @@ import com.uor.fot.complainandassetsmanagementsystem.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/reports")
-public class ReportController {
+public class    ReportController {
 
     private final ReportService reportService;
 
@@ -20,16 +22,18 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    @GetMapping("/all")
+    public String getAllReports(Model model) {
+        List<Report> reports = reportService.getAllReports();
+        model.addAttribute("reports", reports);
+        return "report/reports";
+    }
+
+
     @PostMapping
     public ResponseEntity<Report> createReport(@RequestBody Report report) {
         Report createdReport = reportService.createReport(report);
         return new ResponseEntity<>(createdReport, HttpStatus.CREATED);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Report>> getAllReports() {
-        List<Report> reports = reportService.getAllReports();
-        return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

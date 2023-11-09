@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Complaint</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      color: #333;
+      background-image: url('/static/images/hostal.jpg');
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Back Button */
+    .back-button {
+      align-self: flex-end;
+      margin: 10px;
+      padding: 10px 20px;
+      text-align: right;
+
+    }
+
+    /* Title Bar */
+    .title-bar {
+      background-color: #45a049;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .title {
+      margin: 0;
+      text-align: center;
+
+    }
+
+    /* Form Container */
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    .complaint-form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 60%; /* Reduced width */
+    }
+
+    .form-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .form-column {
+      width: 48%; /* Two columns with a little gap */
+    }
+
+    .form-label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .form-button {
+      background-color: #45a049;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .form-dropdown {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .form-date {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+<div class="title-bar">
+  <h1 class="title">Update Complaint</h1>
+  <a class="back-button" th:href="@{/home/view_complaint}" style="color: white;">Back</a>
+</div>
+<div class="form-container">
+  <form class="complaint-form" th:action="@{complain/update}" method="post" enctype="multipart/form-data">
+    <div class="form-section">
+      <div class="form-column">
+        <label for="regNo" class="form-label">Registration No:</label>
+        <input type="text" name="studentRegNo" id="regNo" class="form-input" th:value="">
+      </div>
+      <div class="form-column">
+        <label for="assetId" class="form-label">Asset Type:</label>
+        <select name="assetId" id="assetId" class="form-dropdown" th:value="">
+          <option th:value="1" th:selected="">Chair</option>
+          <option th:value="2" th:selected="">Table</option>
+          <option th:value="3" th:selected="">Cupboard</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-column">
+        <label for="description" class="form-label">Description:</label>
+        <input type="text" name="description" id="description" class="form-input" th:value="$">
+      </div>
+      <div class="form-column">
+        <label for="complaintQuantity" class="form-label">Complaint Quantity:</label>
+        <input type="text" name="quantity" id="complaintQuantity" class="form-input" th:value="$">
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-column">
+        <label for="complaintUrgency" class="form-label">Complaint Urgency:</label>
+        <select name="urgency" id="complaintUrgency" class="form-dropdown" th:value="$">
+          <option th:value="1" th:selected="">Low</option>
+          <option th:value="2" th:selected="">Medium</option>
+          <option th:value="3" th:selected="">High</option>
+        </select>
+      </div>
+      <div class="form-column">
+        <label for="imageURL" class="form-label">Image :</label>
+        <input type="file" name="image" id="imageURL" class="form-input" accept="image/*">
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <button type="submit" class="form-button">Submit</button>
+      <button type="reset" class="form-button">Reset</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

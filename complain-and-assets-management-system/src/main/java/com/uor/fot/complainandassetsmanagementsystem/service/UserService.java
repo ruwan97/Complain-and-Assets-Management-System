@@ -3,7 +3,8 @@ package com.uor.fot.complainandassetsmanagementsystem.service;
 import com.uor.fot.complainandassetsmanagementsystem.dto.UserRegistrationDTO;
 import com.uor.fot.complainandassetsmanagementsystem.enums.UserRoleType;
 import com.uor.fot.complainandassetsmanagementsystem.enums.UserStatus;
-import com.uor.fot.complainandassetsmanagementsystem.model.*;
+import com.uor.fot.complainandassetsmanagementsystem.model.Room;
+import com.uor.fot.complainandassetsmanagementsystem.model.User;
 import com.uor.fot.complainandassetsmanagementsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -188,7 +189,11 @@ public class UserService {
     }
 
     public void incrementLoginAttempts(User user) {
-        user.incrementLoginAttempts();
+        if (user.getLoginAttempts() == 0) {
+            user.setLoginAttempts(1);
+        } else {
+            user.setLoginAttempts(user.getLoginAttempts() + 1);
+        }
         if (user.getLoginAttempts() >= User.getMaxLoginAttempts()) {
             lockAccount(user);
         }

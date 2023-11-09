@@ -1,43 +1,42 @@
 package com.uor.fot.complainandassetsmanagementsystem.controller;
 
+import com.uor.fot.complainandassetsmanagementsystem.dto.ComplaintInfoResponseDto;
 import com.uor.fot.complainandassetsmanagementsystem.dto.CreateComplaintDTO;
 import com.uor.fot.complainandassetsmanagementsystem.dto.PriorityType;
 import com.uor.fot.complainandassetsmanagementsystem.enums.ComplaintStatus;
 import com.uor.fot.complainandassetsmanagementsystem.model.Asset;
 import com.uor.fot.complainandassetsmanagementsystem.model.Complaint;
 import com.uor.fot.complainandassetsmanagementsystem.model.Student;
-import com.uor.fot.complainandassetsmanagementsystem.service.ImageService;
 import com.uor.fot.complainandassetsmanagementsystem.service.AssetService;
 import com.uor.fot.complainandassetsmanagementsystem.service.ComplaintService;
+import com.uor.fot.complainandassetsmanagementsystem.service.ImageService;
 import com.uor.fot.complainandassetsmanagementsystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@RestController
-@RequestMapping("/api/complains")
+import java.util.List;
+
+@Controller
+@RequestMapping("/complain")
 public class ComplaintController {
     private final ComplaintService complaintService;
     private final AssetService assetService;
     private final StudentService studentService;
-    private final ImageService imageService;
 
     @Autowired
-    public ComplaintController(ComplaintService complaintService, AssetService assetService, StudentService studentService, ImageService imageService) {
+    public ComplaintController(ComplaintService complaintService, AssetService assetService, StudentService studentService) {
         this.complaintService = complaintService;
         this.assetService = assetService;
         this.studentService = studentService;
-        this.imageService = imageService;
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<String> submitComplaint(@RequestPart("complaintDTO") CreateComplaintDTO complaintDTO, @RequestPart("image") MultipartFile image) {
+    public String submitComplaint(@ModelAttribute CreateComplaintDTO complaintDTO, @RequestParam("image") MultipartFile image, RedirectAttributes redirectAttributes) {
         try {
-            // Save the image
-            String imageUrl = imageService.saveImage(image);
-
             // Create a new complaint
             Complaint complaint = new Complaint();
 
@@ -53,28 +52,33 @@ public class ComplaintController {
             if (student == null) {
                 throw new RuntimeException("Student not found.");
             }
-            complaint.setUser(student);
+            complaint.setStudent(student);
 
             complaint.setDescription(complaintDTO.getDescription());
             complaint.setQuantity(complaintDTO.getQuantity());
-            complaint.setImageURL(imageUrl);
             complaint.setUrgency(PriorityType.getById(complaintDTO.getUrgency()).getId());
-            complaint.setStatus(ComplaintStatus.NEW.getId());
+            complaint.setStatus(ComplaintStatus.ESCALATED_TO_SUB_WARDEN.getId());
 
-            complaintService.submitComplaint(complaint);
+            complaintService.submitComplaint(complaint, complaintDTO.getImage());
 
-            return ResponseEntity.ok("Complaint submitted successfully.");
+            redirectAttributes.addFlashAttribute("successMessage", "Complaint submitted successfully.");
+            return "redirect:/complain/view/info";
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to submit the complaint.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to submit the complaint.");
+            return "redirect:/add/complaint";
         }
     }
 
+    @GetMapping("/view/info")
+    public String getComplainsInfo(Model model) {
+        List<ComplaintInfoResponseDto> complaints = complaintService.getComplaintInfo();
+        model.addAttribute("complaints", complaints);
+        return "complaint/view_complaint";
+    }
 
-    @PostMapping("/{complaintId}/handle-escalation")
-    public ResponseEntity<Void> handleEscalatedComplaint(@PathVariable Long complaintId) {
-        complaintService.handleEscalatedComplaint(complaintId);
-        return ResponseEntity.ok().build();
+    @PutMapping ("update")
+    public String updateComplain(CreateComplaintDTO complaintDTO) {
+        return null;
     }
 }

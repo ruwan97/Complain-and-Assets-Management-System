@@ -14,8 +14,8 @@ public class Complaint {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "student_id")
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "asset_id")

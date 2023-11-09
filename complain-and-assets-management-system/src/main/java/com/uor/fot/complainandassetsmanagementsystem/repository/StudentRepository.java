@@ -15,7 +15,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Transactional
     @Procedure(procedureName = "sp_register_student")
     void registerStudent(
-            @Param("titleId") int titleId,
             @Param("firstName") String firstName,
             @Param("lastName") String lastName,
             @Param("emailAddress") String email,
@@ -34,5 +33,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Student s WHERE s.regNo = :regNo")
     boolean existsByStuRegNo(@Param("regNo") String studentRegNo);
+
+    Student getStudentByRegNo(String studentRegNo);
 }
 

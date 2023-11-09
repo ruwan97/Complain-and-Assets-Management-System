@@ -1,7 +1,10 @@
 package com.uor.fot.complainandassetsmanagementsystem.model;
 
 import lombok.Data;
-import javax.persistence.*;
+
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 @Data
 @Entity

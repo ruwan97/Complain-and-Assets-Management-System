@@ -5,11 +5,14 @@ import com.uor.fot.complainandassetsmanagementsystem.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/rooms")
 public class RoomController {
 
@@ -20,26 +23,34 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+    @GetMapping
+    public String showAllRooms(Model model) {
+        List<Room> rooms = roomService.getAllRooms();
+        model.addAttribute("rooms", rooms);
+        return "room/rooms";
+    }
+
+    @GetMapping("/new")
+    public String showRoomForm(Model model) {
+        model.addAttribute("room", new Room());
+        return "room/add_room";
+    }
+
+    @GetMapping("/{id}")
+    public String showRoomById(@PathVariable Long id, Model model) {
+        Optional<Room> room = roomService.getRoomById(id);
+        if (room.isPresent()) {
+            model.addAttribute("room", room.get());
+            return "room-form";
+        } else {
+            return "redirect:/rooms";
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Room> createRoom(@RequestBody Room room) {
         Room createdRoom = roomService.createRoom(room);
         return new ResponseEntity<>(createdRoom, HttpStatus.CREATED);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Room>> getAllRooms() {
-        List<Room> rooms = roomService.getAllRooms();
-        return new ResponseEntity<>(rooms, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
-        Room room = roomService.getRoomById(id).get();
-        if (room != null) {
-            return new ResponseEntity<>(room, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @PutMapping("/{id}")

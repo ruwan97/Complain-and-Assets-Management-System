@@ -3,12 +3,14 @@ package com.uor.fot.complainandassetsmanagementsystem.controller;
 import com.uor.fot.complainandassetsmanagementsystem.model.Student;
 import com.uor.fot.complainandassetsmanagementsystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/students")
 public class StudentController {
 
@@ -20,8 +22,10 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public String getAllStudents(Model model) {
+        List<Student> students = studentService.getAllStudents();
+        model.addAttribute("students", students);
+        return "user/view_user";
     }
 
     @GetMapping("/{id}")

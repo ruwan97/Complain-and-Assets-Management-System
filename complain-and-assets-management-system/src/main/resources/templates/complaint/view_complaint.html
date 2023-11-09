@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Complaints</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Back Button */
+        .back-button {
+            align-self: flex-end;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #45a049; /* Matching the theme color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background-color: #45a049; /* Green background for "View Complaints" */
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .title {
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Form Container */
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .complaint-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 80%; /* Adjusted width for better visibility */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px; /* Added margin for separation from form */
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #45a049; /* Black background for column names */
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Background color for even rows */
+        }
+
+        /* Form Button Styles */
+        .form-button, .form-reset-button {
+            background-color: #45a049; /* Matching the theme color */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px; /* Added margin to separate buttons */
+        }
+
+        .form-reset-button {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        /* Button Styles */
+        .update-button {
+            background-color: #0073e6; /* Blue for the Update button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-button {
+            background-color: #e60000; /* Red for the Delete button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="title-bar">
+    <h1 class="title">View Complaints</h1>
+    <a class="back-button" th:href="@{/home/complaint}" style="color: white;">Back</a>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Role Name</th>
+        <th>Faculty Name</th>
+        <th>Asset Name</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Description</th>
+        <th>Submission Date</th>
+        <th>Quantity</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="complain : ${complaints}">
+        <td th:text="${complain.firstName}"></td>
+        <td th:text="${complain.lastName}"></td>
+        <td th:text="${complain.roleName}"></td>
+        <td th:text="${complain.facultyName}"></td>
+        <td th:text="${complain.assetName}"></td>
+        <td th:text="${complain.createdAt}"></td>
+        <td th:text="${complain.updatedAt}"></td>
+        <td th:text="${complain.description}"></td>
+        <td th:text="${complain.submissionDate}"></td>
+        <td th:text="${complain.quantity}"></td>
+        <td th:text="${complain.status}"></td>
+        <td>
+            <button class="update-button" th:href="@{/update/complaint}">Update</button>
+            <button class="delete-button">Delete</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script th:inline="javascript">
+    function updateComplaint(id) {
+        console.log('Update complaint:', id);
+        // You can redirect the user to the update page or perform any other action here
+        // Add your logic here
+    }
+
+    function deleteComplaint(id) {
+        console.log('Delete complaint:', id);
+        // You can confirm the deletion with the user and send a request to the server to delete the complaint
+        // Add your logic here
+    }
+</script>
+</body>
+</html>

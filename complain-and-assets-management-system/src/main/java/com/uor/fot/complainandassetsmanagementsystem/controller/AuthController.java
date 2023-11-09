@@ -1,6 +1,5 @@
 package com.uor.fot.complainandassetsmanagementsystem.controller;
 
-import com.uor.fot.complainandassetsmanagementsystem.dto.LoginRequestDto;
 import com.uor.fot.complainandassetsmanagementsystem.enums.UserStatus;
 import com.uor.fot.complainandassetsmanagementsystem.model.User;
 import com.uor.fot.complainandassetsmanagementsystem.service.UserService;
@@ -8,13 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@RestController
+@Controller
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -27,39 +28,44 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
+    public String login(@RequestParam String email, @RequestParam String password, Model model, HttpServletResponse response) {
         try {
-            User user = userService.findByEmail(loginRequest.getEmail());
+            User user = userService.findByEmail(email);
 
             if (user == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Incorrect email address");
+                model.addAttribute("errorMessage", "Incorrect email address");
+                return "auth/login";
             }
 
             if (user.getStatus() == UserStatus.INACTIVE.getId()) {
-                return ResponseEntity.status(HttpStatus.LOCKED).body("Account is not active. Please contact support center");
+                model.addAttribute("errorMessage", "Account is not active. Please contact support center");
+                return "auth/login";
             }
 
             if (user.getStatus() == UserStatus.BLOCKED.getId()) {
                 if (userService.isAccountLocked(user)) {
-                    return ResponseEntity.status(HttpStatus.LOCKED).body("Account is locked. Please contact support center");
+                    model.addAttribute("errorMessage", "Account is locked. Please contact support center");
+                    return "auth/login";
                 }
             }
 
-            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 if (user.getStatus() != UserStatus.ACTIVE.getId()) {
-                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User is not active. Please contact support center");
+                    model.addAttribute("errorMessage", "User is not active. Please contact support center");
+                    return "auth/login";
                 }
 
-                response.sendRedirect("/home");
-                return ResponseEntity.ok("Login successful");
+                response.sendRedirect("/cams/dashboard");
             } else {
                 userService.incrementLoginAttempts(user);
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect Password");
+                model.addAttribute("errorMessage", "Incorrect Password");
             }
+            return "auth/login";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {

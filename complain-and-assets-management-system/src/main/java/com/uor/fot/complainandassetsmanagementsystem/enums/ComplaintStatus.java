@@ -1,10 +1,10 @@
 package com.uor.fot.complainandassetsmanagementsystem.enums;
 
 public enum ComplaintStatus {
-    NEW(1, "New"),
-    ESCALATED_TO_SUB_WARDEN(2, "Escalated to Sub-Warden"),
-    ESCALATED_TO_ACADEMIC_WARDEN(3, "Escalated to Academic Warden"),
-    RESOLVED(4, "Resolved");
+
+    ESCALATED_TO_SUB_WARDEN(1, "Escalated to Sub-Warden"),
+    ESCALATED_TO_ACADEMIC_WARDEN(2, "Escalated to Academic Warden"),
+    RESOLVED(3, "Resolved");
 
     private final int id;
     private final String description;

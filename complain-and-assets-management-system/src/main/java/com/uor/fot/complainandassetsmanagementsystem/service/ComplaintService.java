@@ -1,40 +1,51 @@
 package com.uor.fot.complainandassetsmanagementsystem.service;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.uor.fot.complainandassetsmanagementsystem.dto.ComplaintInfoResponseDto;
 import com.uor.fot.complainandassetsmanagementsystem.enums.ComplaintStatus;
 import com.uor.fot.complainandassetsmanagementsystem.model.Complaint;
-import com.uor.fot.complainandassetsmanagementsystem.model.SubWarden;
 import com.uor.fot.complainandassetsmanagementsystem.model.User;
 import com.uor.fot.complainandassetsmanagementsystem.repository.ComplaintRepository;
 import com.uor.fot.complainandassetsmanagementsystem.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigInteger;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ComplaintService {
+    private static final Logger logger = LoggerFactory.getLogger(ComplaintService.class);
 
     private final ComplaintRepository complaintRepository;
     private EmailService emailService;
     private UserRepository userRepository;
-
-
+    private final ImageService imageService;
 
     @Autowired
-    public ComplaintService(ComplaintRepository complaintRepository, EmailService emailService, UserRepository userRepository) {
+    public ComplaintService(ComplaintRepository complaintRepository, EmailService emailService, UserRepository userRepository, ImageService imageService) {
         this.complaintRepository = complaintRepository;
         this.emailService = emailService;
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
+
+    @Value("${complain.image.save.path}")
+    private String complaintImageSavePath;
+
+    @Value("${qr.code.save.path}")
+    private String qrCodeSavePath;
 
     public List<Complaint> getAllComplaints() {
         return complaintRepository.findAll();
@@ -44,26 +55,37 @@ public class ComplaintService {
         return complaintRepository.findById(id);
     }
 
-    public void submitComplaint(Complaint complaint) {
+    public void submitComplaint(Complaint complaint, MultipartFile image) {
+        // Save the complaint image
+        String imageUrl = imageService.saveImage(image, complaintImageSavePath);
+
         // Generate a unique QR code for the complaint
-        String qrCodeText = "Complaint ID: " + complaint.getId();
+        String qrCodeText = "Complaint ID: " + complaint.getId() +
+                ", Asset ID: " + complaint.getAsset().getId() +
+                ", Description: " + complaint.getDescription() +
+                ", Status: " + complaint.getStatus() +
+                ", Urgency: " + complaint.getUrgency() +
+                ", Quantity: " + complaint.getQuantity();
         int width = 200;
         int height = 200;
 
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeText, com.google.zxing.BarcodeFormat.QR_CODE, width, height);
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, width, height);
 
             // Save the QR code image to a file
-            Path qrCodePath = Paths.get("images/qr-codes/" + complaint.getId() + ".png");
+            String qrCodeFileName = "complaint_qr_" + UUID.randomUUID() + ".png"; // Example of a custom file name
+            Path qrCodePath = Paths.get(qrCodeSavePath, qrCodeFileName);
+            Files.createDirectories(qrCodePath.getParent());
             MatrixToImageWriter.writeToPath(bitMatrix, "PNG", qrCodePath);
 
             // Associate the QR code URL or file path with the complaint and save it
             complaint.setQrCodeUrl(qrCodePath.toString());
+            complaint.setImageURL(imageUrl);
 
             // save
             complaintRepository.saveComplaint(
-                    complaint.getUser().getId(),
+                    complaint.getStudent().getId(),
                     complaint.getAsset().getId(),
                     complaint.getDescription(),
                     complaint.getStatus(),
@@ -118,5 +140,47 @@ public class ComplaintService {
             // Send the email
             emailService.sendEmailToUser(user.getEmail(), subject, message);
         }
+    }
+
+    public List<ComplaintInfoResponseDto> getComplaintInfo() {
+        List<ComplaintInfoResponseDto> results = new ArrayList<>();
+        List<Object[]> data = complaintRepository.getComplaintInfo();
+
+        for (Object[] row : data) {
+            ComplaintInfoResponseDto dto = new ComplaintInfoResponseDto();
+            dto.setCpId(((BigInteger) row[0]).intValue());
+            dto.setFirstName((String) row[1]);
+            dto.setLastName((String) row[2]);
+            dto.setRoleName((String) row[3]);
+            dto.setFacultyName((String) row[4]);
+            dto.setCreatedAt((Date) row[5]);
+            dto.setUpdatedAt((Date) row[6]);
+            dto.setAssetName((String) row[7]);
+            dto.setDescription((String) row[8]);
+            dto.setSubmissionDate((Date) row[9]);
+            dto.setQuantity((Integer) row[10]);
+
+            int statusId = (int) row[11]; // assuming row[11] is already an Integer
+            String status;
+            switch (statusId) {
+                case 1:
+                    status = "Escalated to Sub-Warden";
+                    break;
+                case 2:
+                    status = "Escalated to Academic Warden";
+                    break;
+                case 3:
+                    status = "Resolved";
+                    break;
+                default:
+                    status = "Unknown";
+                    break;
+            }
+            dto.setStatus(status);
+
+            results.add(dto);
+        }
+
+        return results;
     }
 }

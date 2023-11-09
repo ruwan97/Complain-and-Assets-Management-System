@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            background-image: url('/static/images/hostal.jpg');
+            background-size: cover;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: #45a049;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .dashboard-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .dashboard-item h2 {
+            color: #45a049;
+        }
+
+        .dashboard-item a {
+            color: #45a049;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dashboard-item p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        .back_button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color:  #fff;
+            color:#000000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Complaint Management</h1>
+    <button class="back_button"><a th:href="@{/home/complaint}">Back</a></button>
+</div>
+<div class="dashboard-container">
+    <div class="dashboard-item">
+        <h2><a th:href="@{/add/complaint}">Add Complaint</a></h2>
+    </div>
+    <div class="dashboard-item">
+        <h2><a th:href="@{/complain/view/info}">View Complaint</a></h2>
+    </div>
+</div>
+</body>
+</html>

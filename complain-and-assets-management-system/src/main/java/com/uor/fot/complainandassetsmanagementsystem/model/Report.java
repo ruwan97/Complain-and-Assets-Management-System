@@ -27,4 +27,3 @@ public class Report {
     private String reportContent;
 }
 
-

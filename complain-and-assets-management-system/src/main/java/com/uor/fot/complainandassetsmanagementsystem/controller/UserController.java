@@ -1,6 +1,5 @@
 package com.uor.fot.complainandassetsmanagementsystem.controller;
 
-import com.uor.fot.complainandassetsmanagementsystem.dto.RegistrationResponseDto;
 import com.uor.fot.complainandassetsmanagementsystem.dto.UserRegistrationDTO;
 import com.uor.fot.complainandassetsmanagementsystem.dto.UserUpdateDTO;
 import com.uor.fot.complainandassetsmanagementsystem.model.User;
@@ -11,12 +10,14 @@ import com.uor.fot.complainandassetsmanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/users")
+@Controller
+@RequestMapping("/user")
 public class UserController {
 
     private static final String SUCCESS_MESSAGE = "User registered successfully.";
@@ -33,22 +34,18 @@ public class UserController {
         this.facultyService = facultyService;
     }
 
-    // Create a new user
     @PostMapping("/register")
-    public ResponseEntity<RegistrationResponseDto> registerUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
-        RegistrationResponseDto response;
+    public String registerUser(@ModelAttribute UserRegistrationDTO userRegistrationDTO, RedirectAttributes redirectAttributes) {
         // validate request
         validateRequest(userRegistrationDTO);
         boolean isCreated = userService.createUser(userRegistrationDTO);
         if (isCreated) {
-            // Create a success response
-            response = new RegistrationResponseDto(SUCCESS_MESSAGE);
-
-            return ResponseEntity.ok(response);
+            redirectAttributes.addFlashAttribute("registrationSuccess", true);
+            return "redirect:/login";
         } else {
-            // Create a error response
-            response = new RegistrationResponseDto(INTERNAL_ERROR_MESSAGE);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            redirectAttributes.addFlashAttribute("registrationSuccess", false);
+            // handle the error case
+            return "redirect:/register";
         }
     }
 
@@ -78,14 +75,12 @@ public class UserController {
         }
     }
 
-    // Get all users
     @GetMapping("/get/all")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    // Get user by ID
     @GetMapping("/get/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
@@ -96,7 +91,6 @@ public class UserController {
         }
     }
 
-    // Update user
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
         // Map the UserUpdateDTO to a User entity
@@ -110,7 +104,6 @@ public class UserController {
         }
     }
 
-    // Delete user by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         boolean deleted = userService.deleteUser(id);
@@ -121,7 +114,6 @@ public class UserController {
         }
     }
 
-    // Helper method to map UserUpdateDTO to User
     private User mapUpdateDTOToUser(Long id, UserUpdateDTO userUpdateDTO) {
         User user = new User();
         user.setId(id);

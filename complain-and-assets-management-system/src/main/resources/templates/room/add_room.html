@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('/static/images/hostal.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Back Button */
+        .back-button {
+            align-self: flex-end;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #45a049;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background-color: #45a049;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .title {
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Form Container */
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            margin-top: 20px; /* Added margin to move the form down */
+        }
+
+        .complaint-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 60%; /* Adjusted form width */
+        }
+
+        .form-label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-button {
+            background-color: #45a049;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="title-bar">
+    <h1 class="title">Add Room</h1>
+    <a class="back-button" href="rooms.html" style="color: white;">Back</a>
+</div>
+<div class="form-container">
+    <form class="complaint-form" method="post" action="your_php_script_for_adding_room.php">
+        <label for="roomFloorId" class="form-label">Floor ID:</label>
+        <input type="text" name="roomFloorId" id="roomFloorId" class="form-input">
+
+        <label for="roomStudentCount" class="form-label">No. of Students:</label>
+        <input type="text" name="roomStudentCount" id="roomStudentCount" class="form-input">
+
+        <label for="roomNo" class="form-label">Room Number:</label>
+        <input type="text" name="roomNo" id="roomNo" class="form-input">
+
+        <button type="submit" class="form-button">Add Room</button>
+    </form>
+</div>
+</body>
+</html>

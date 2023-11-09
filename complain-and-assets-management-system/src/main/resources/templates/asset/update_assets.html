@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Assets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      color: #333;
+      background-image: url('/static/images/hostal.jpg');
+      background-size: cover;
+      height: 100vh;
+    }
+
+    /* Back Button */
+    .back-button {
+      align-self: flex-end;
+      margin: 10px;
+      padding: 10px 20px;
+    }
+
+    /* Title Bar */
+    .title-bar {
+      background-color: #45a049;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .title {
+      margin: 0;
+      text-align: center;
+
+    }
+
+    .registration-container {
+      width: 60%;
+      margin: 20px Auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #666;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: calc(100% - 22px);
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    .centered-button {
+      text-align: center;
+      width: 100%;
+      padding: 10px;
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+      width: calc(100% - 22px);
+
+    }
+
+    .centered-button button {
+      width: 100%;
+      max-width: 200px;
+      padding: 10px;
+      border: none;
+      background-color: #4caf50;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .centered-button button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+<div class="title-bar">
+  <h1 class="title">Update Asset</h1>
+  <a class="back-button" href="view_assests.html" style="color: white;">Back</a>
+</div>
+<div class="registration-container" >
+  <div class="input-group">
+    <label for="assetCondition">Asset Condition</label>
+    <input type="text" id="assetCondition" name="fassetCondition" placeholder="Enter asset condition" required>
+  </div>
+  <div class="input-group">
+    <label for="assetDescription">Asset Description</label>
+    <input type="text" id="assetDescription" name="assetDescription" placeholder="Enter asset description" required>
+  </div>
+  <div class="input-group">
+    <label for="assetName">Asset Name</label>
+    <input type="email" id="assetName" name="assetName" placeholder="Enter asset name" required>
+  </div>
+  <div class="input-group">
+    <label for="assetQuantity">Asset Quantity</label>
+    <input type="password" id="assetQuantity" name="assetQuantity" placeholder="Enter asset quantity" required>
+  </div>
+  <div class="centered-button">
+    <button type="submit">Submit</button>
+    <button type="submit">Reset</button>
+  </div>
+</div>
+</body>
+
+</html>

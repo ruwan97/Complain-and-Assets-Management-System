@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: #45a049;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .dashboard-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .dashboard-item h2 {
+            color: #45a049;
+        }
+
+        .dashboard-item a {
+            color: #45a049;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dashboard-item p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        /* Style for the success message */
+        #successMessage {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <h1>Hostel Management System</h1>
+</div>
+<div class="dashboard-container">
+    <div class="dashboard-item">
+        <h2><a th:href="@{/home/user}">User</a></h2>
+        <p>Go to User Management</p>
+    </div>
+    <div class="dashboard-item">
+        <h2><a th:href="@{/home/report}">Report</a></h2>
+        <p>Go to Report Management</p>
+    </div>
+    <div class="dashboard-item">
+        <h2><a th:href="@{/home/asset}">Assets</a></h2>
+        <p>Go to Assets Management</p>
+    </div>
+    <div class="dashboard-item">
+        <h2><a th:href="@{/home/complaint}">Complaints</a></h2>
+        <p>Go to Complaints Management</p>
+    </div>
+    <div class="dashboard-item">
+        <h2><a th:href="@{/home/room}">Rooms</a></h2>
+        <p>Go to Rooms Management</p>
+    </div>
+</div>
+<!-- Display the success message here -->
+<div id="successMessage"></div>
+
+<script>
+    // Set a timeout function to hide the success message after a certain time
+    setTimeout(function () {
+        var successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
+    }, 5000); // Timeout of 5000 milliseconds (5 seconds)
+
+    // Add the success message to the message container
+    var successMessageContainer = document.getElementById('successMessage');
+    if (successMessageContainer) {
+        successMessageContainer.innerHTML = "<p>Login successful</p>"; // Replace with your desired message
+    }
+</script>
+</body>
+
+</html>

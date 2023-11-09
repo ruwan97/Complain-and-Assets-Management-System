@@ -33,7 +33,6 @@ public class StudentService {
         // set default value as 0
         Integer userId = 0;
         studentRepository.registerStudent(
-                registrationDTO.getTitleId(),
                 registrationDTO.getFirstName(),
                 registrationDTO.getLastName(),
                 registrationDTO.getEmail(),
@@ -70,8 +69,7 @@ public class StudentService {
     }
 
     public Student getStudentByRegNo(String studentRegNo) {
-
-        return null;
+        return studentRepository.getStudentByRegNo(studentRegNo);
     }
 
     public boolean existsByStuRegNo(String studentRegNo) {

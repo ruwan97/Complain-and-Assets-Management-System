@@ -2,6 +2,7 @@ package com.uor.fot.complainandassetsmanagementsystem.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,7 +10,7 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class ImageService {
-    public String saveImage(MultipartFile image) {
+    public String saveImage(MultipartFile image, String directory) {
         try {
             if (image.isEmpty()) {
                 throw new IllegalArgumentException("Image file is empty");
@@ -20,7 +21,10 @@ public class ImageService {
             String uniqueFilename = System.currentTimeMillis() + "_" + originalFilename;
 
             // Resolve the full path for the image file
-            Path imagePath = Paths.get("images/asset/damage", uniqueFilename);
+            Path imagePath = Paths.get(directory, uniqueFilename);
+
+            // Create the directories if they don't exist
+            Files.createDirectories(imagePath.getParent());
 
             // Copy the uploaded file to the target path
             Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);

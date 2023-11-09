@@ -5,6 +5,7 @@ import com.uor.fot.complainandassetsmanagementsystem.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,19 +28,23 @@ public class AssetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Asset>> getAllAssets() {
+    public String showAllAssets(Model model) {
         List<Asset> assets = assetService.getAllAssets();
-        return new ResponseEntity<>(assets, HttpStatus.OK);
+        model.addAttribute("assets", assets);
+        return "assets";
+    }
+
+    @GetMapping("/new")
+    public String showAssetForm(Model model) {
+        model.addAttribute("asset", new Asset());
+        return "asset-form";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Asset> getAssetById(@PathVariable Long id) {
+    public String showAssetById(@PathVariable Long id, Model model) {
         Asset asset = assetService.getAssetById(id);
-        if (asset != null) {
-            return new ResponseEntity<>(asset, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        model.addAttribute("asset", asset);
+        return "asset-form";
     }
 
     @PutMapping("/{id}")
